@@ -11,7 +11,7 @@ class Test
   end
 
   def run
-    @questions.each_with_index do |index|
+    @questions.each_with_index do |_question, index|
       @question_timer = Thread.new { question(index) }
       @timer = Thread.new { timer }
       @question_timer.join
