@@ -1,39 +1,32 @@
 #!/usr/bin/env ruby
 
-require 'pry'
-
 # Unfair Test
 
 class Test
-  #CORRECT_POINTS = 15
-
   def initialize
-    @arQuest = ["What is 3+5?","What colour is a Banana?","How many colours are there on a Rubix cube?"]
-    @arAnswer = ["8","Yellow","6"]
+    @questions = ['What is 3+5?', 'What colour is a Banana?', 'How many colours are there on a Rubix cube?']
+    @answers = ['8', 'Yellow', '6']
 
     @total = []
   end
 
   def run
-    @arQuest.each_with_index do |qs, index|
-      @thQuest = Thread.new{question(index)}
-      @thTimer = Thread.new{timer}
-      @thQuest.join
-      @thTimer.join
+    @questions.each_with_index do |index|
+      @question_timer = Thread.new { question(index) }
+      @timer = Thread.new { timer }
+      @question_timer.join
+      @timer.join
     end
-    puts ''
-    puts "#########################################"
-    puts "End of Test"
-    puts "Your total score is #{@total.inject(:+)}"
-    puts "#########################################"
+
+    end_of_test
   end
 
   def question(question_number)
-    puts @arQuest[question_number]
+    puts @questions[question_number]
     puts ''
     @answer = gets.chomp
 
-    is_answer_correct?(question_number)
+    answer_correct?(question_number)
   end
 
   def timer
@@ -45,23 +38,35 @@ class Test
       sleep 0.5
     end
 
-    @thQuest.kill
+    @question_timer.kill
     puts 'Time has run out'
   end
 
-  def is_answer_correct?(question_number)
-    if @answer.downcase == @arAnswer[question_number].downcase
-      puts ''
+  def answer_correct?(question_number)
+    if @answer.downcase == @answers[question_number].downcase
+      add_space
       puts 'Correct!'
-      puts ''
-      @thTimer.kill
+      add_space
+      @timer.kill
       @total << @score
     else
-      puts ''
+      add_space
       puts 'Incorrect!'
-      puts ''
-      @thTimer.kill
+      add_space
+      @timer.kill
     end
+  end
+
+  def end_of_test
+    add_space
+    puts '#########################################'
+    puts 'End of Test'
+    puts "Your total score is #{@total.inject(:+)}"
+    puts '#########################################'
+  end
+
+  def add_space
+    puts ''
   end
 end
 
